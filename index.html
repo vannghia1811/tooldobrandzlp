@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tool Dò Brand Zalopay & Chuyển Timestamp</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #0068ff;
+            --primary-light: #e6f0ff;
+            --secondary-color: #f0f8ff;
+            --border-color: #e0e0e0;
+            --text-color: #2d3748;
+            --text-light: #718096;
+            --success-color: #38a169;
+            --warning-color: #dd6b20;
+            --error-color: #e53e3e;
+            --bg-color: #f7fafc;
+            --card-bg: #ffffff;
+            --timestamp-primary: #4a6fa5;
+            --timestamp-secondary: #166088;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: var(--bg-color);
+        }
+        
+        .container {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+        
+        h1 {
+            color: var(--primary-color);
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 28px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+        }
+        
+        h2 {
+            color: var(--timestamp-primary);
+            margin: 30px 0 15px 0;
+            font-size: 22px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        h2::before {
+            content: "";
+            display: block;
+            width: 4px;
+            height: 22px;
+            background: var(--timestamp-primary);
+            border-radius: 2px;
+        }
+        
+        .form-group {
+            margin-bottom: 24px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            font-size: 14px;
+            color: var(--text-color);
+        }
+        
+        input, select {
+            padding: 12px 14px;
+            width: 100%;
+            box-sizing: border-box;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 15px;
+            transition: all 0.2s;
+            background-color: var(--card-bg);
+        }
+        
+        input:focus, select:focus {
+            border-color: var(--primary-color);
+            outline: none;
+            box-shadow: 0 0 0 3px var(--primary-light);
+        }
+        
+        .range-inputs {
+            display: flex;
+            gap: 12px;
+        }
+        
+        .range-inputs input {
+            flex: 1;
+        }
+        
+        button {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 14px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            width: 100%;
+            transition: all 0.2s;
+            margin-top: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        
+        button:hover {
+            background: #0052cc;
+            transform: translateY(-1px);
+        }
+        
+        button:active {
+            transform: translateY(0);
+        }
+        
+        .btn-secondary {
+            background: var(--secondary-color);
+            color: var(--primary-color);
+            border: 1px solid var(--primary-color);
+        }
+        
+        .btn-secondary:hover {
+            background: var(--primary-light);
+        }
+        
+        .btn-timestamp {
+            background: var(--timestamp-primary);
+        }
+        
+        .btn-timestamp:hover {
+            background: var(--timestamp-secondary);
+        }
+        
+        .code-container {
+            margin-top: 30px;
+            position: relative;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        #generatedCode, #rewardLink {
+            padding: 20px;
+            background: #f8fafc;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            white-space: pre-wrap;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 14px;
+            line-height: 1.6;
+            max-height: 400px;
+            overflow-y: auto;
+            color: #2d3748;
+            tab-size: 2;
+            min-height: 150px;
+        }
+        
+        #rewardLink {
+            font-family: inherit;
+            white-space: nowrap;
+            overflow-x: auto;
+        }
+        
+        .copy-btn {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            background: var(--primary-light);
+            color: var(--primary-color);
+            border: none;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            z-index: 10;
+        }
+        
+        .copy-btn:hover {
+            background: var(--primary-color);
+            color: white;
+        }
+        
+        .copy-message {
+            color: var(--success-color);
+            margin-top: 12px;
+            font-size: 14px;
+            text-align: center;
+            display: none;
+            font-weight: 500;
+        }
+        
+        .note {
+            font-size: 13px;
+            color: var(--text-light);
+            margin-top: 6px;
+            font-style: italic;
+        }
+        
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin: 30px 0 15px 0;
+            color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .section-title::before {
+            content: "";
+            display: block;
+            width: 4px;
+            height: 18px;
+            background: var(--primary-color);
+            border-radius: 2px;
+        }
+        
+        .info-box {
+            background: var(--primary-light);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border-left: 4px solid var(--primary-color);
+        }
+        
+        .info-box p {
+            margin: 0;
+            font-size: 14px;
+            color: var(--text-color);
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 4px 8px;
+            background: var(--primary-light);
+            color: var(--primary-color);
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-right: 8px;
+        }
+        
+        /* Timestamp converter styles */
+        .timestamp-container {
+            margin-top: 40px;
+        }
+        
+        .timestamp-result {
+            margin-top: 25px;
+            padding: 20px;
+            background-color: var(--card-bg);
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            display: none;
+        }
+        
+        .timestamp-result-title {
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: var(--timestamp-secondary);
+            font-size: 18px;
+        }
+        
+        .time-result {
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .time-result:last-child {
+            margin-bottom: 0;
+            padding-bottom: 0;
+            border-bottom: none;
+        }
+        
+        .time-label {
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .time-value {
+            margin-top: 5px;
+            padding-left: 28px;
+            font-family: 'Courier New', monospace;
+        }
+        
+        .current-time {
+            margin-top: 20px;
+            font-size: 14px;
+            color: #666;
+            text-align: center;
+        }
+        
+        @media (max-width: 768px) {
+            .range-inputs {
+                flex-direction: column;
+            }
+            
+            .container {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔍 Tool Dò Brand Zalopay</h1>
+        
+        <div class="info-box">
+            <p><span class="badge">HƯỚNG DẪN</span>Công cụ tạo code JavaScript để dò thông tin brand Zalopay theo ID. Nhập khoảng ID cần quét và nhấn "Tạo Code".</p>
+        </div>
+        
+        <div class="section-title">Thông tin quét</div>
+        
+        <div class="form-group">
+            <label>Khoảng ID cần quét</label>
+            <div class="range-inputs">
+                <input type="number" id="startId" min="1" value="2000" placeholder="ID bắt đầu">
+                <input type="number" id="endId" min="1" value="5000" placeholder="ID kết thúc">
+            </div>
+            <div class="note">Nhập khoảng ID bạn muốn quét (ví dụ: từ 2000 đến 5000)</div>
+        </div>
+        
+        <div class="form-group">
+            <label for="delayTime">Thời gian delay (ms)</label>
+            <input type="number" id="delayTime" value="100" placeholder="Thời gian delay giữa các request">
+            <div class="note">Giảm delay nếu muốn quét nhanh hơn (nhưng có thể bị chặn)</div>
+        </div>
+        
+        <button id="generateBtn">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M17 13L12 18L7 13M12 6L12 17" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            Tạo Code Dò Brand
+        </button>
+        
+        <div class="copy-message" id="copyMessage">Đã copy code vào clipboard!</div>
+        
+        <div class="section-title">Code JavaScript</div>
+        
+        <div class="code-container">
+            <button class="copy-btn" id="copyBtn">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M8 16H6C4.89543 16 4 15.1046 4 6V6C4 4.89543 4.89543 4 6 4H14C15.1046 4 16 4.89543 16 6V8M10 20H18C19.1046 20 20 19.1046 20 18V10C20 8.89543 19.1046 8 18 8H10C8.89543 8 8 8.89543 8 10V18C8 19.1046 8.89543 20 10 20Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                Copy
+            </button>
+            <div id="generatedCode">
+// Code sẽ hiển thị ở đây sau khi nhấn "Tạo Code"
+// Sau khi copy, dán vào Console (F12 > Console) và nhấn Enter
+            </div>
+        </div>
+        
+        <div class="section-title">Link Dò Brand</div>
+        
+        <div class="code-container">
+            <button class="copy-btn" id="copyLinkBtn">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M8 16H6C4.89543 16 4 15.1046 4 6V6C4 4.89543 4.89543 4 6 4H14C15.1046 4 16 4.89543 16 6V8M10 20H18C19.1046 20 20 19.1046 20 18V10C20 8.89543 19.1046 8 18 8H10C8.89543 8 8 8.89543 8 10V18C8 19.1046 8.89543 20 10 20Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                Copy
+            </button>
+            <div id="rewardLink">https://loyalty.zalopay.vn/gateway/v1/reward/3978</div>
+        </div>
+        
+        <button id="openLinkBtn" class="btn-secondary">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M18 13V19C18 20.1046 17.1046 21 16 21H5C3.89543 21 3 20.1046 3 19V8C3 6.89543 3.89543 6 5 6H11M15 3H21M21 3V9M21 3L10 14" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            Mở Link Dò Brand
+        </button>
+
+        <!-- Timestamp Converter Section -->
+        <div class="timestamp-container">
+            <h2>🕒 Công cụ chuyển đổi Timestamp</h2>
+            
+            <div class="form-group">
+                <label for="timestampInput">Nhập timestamp (milliseconds):</label>
+                <input type="number" id="timestampInput" placeholder="Ví dụ: 1625097600000">
+            </div>
+            
+            <button id="convertTimestampBtn" class="btn-timestamp">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 6V12L16 14M22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2C17.5228 2 22 6.47715 22 12Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                Chuyển đổi
+            </button>
+            
+            <div class="timestamp-result" id="timestampResult">
+                <div class="timestamp-result-title">Kết quả chuyển đổi</div>
+                
+                <div class="time-result">
+                    <div class="time-label">
+                        <span>🕓</span>
+                        <span>Thời gian UTC:</span>
+                    </div>
+                    <div class="time-value" id="utcTime"></div>
+                </div>
+                
+                <div class="time-result">
+                    <div class="time-label">
+                        <span>🇻🇳</span>
+                        <span>Giờ Việt Nam (UTC+7):</span>
+                    </div>
+                    <div class="time-value" id="vnTime"></div>
+                </div>
+            </div>
+            
+            <div class="current-time" id="currentTime"></div>
+        </div>
+    </div>
+
+    <script>
+        // Hàm chuyển đổi timestamp
+        function convertTimestamp() {
+            const input = document.getElementById('timestampInput').value.trim();
+            const ms = parseInt(input);
+            
+            if (!input) {
+                alert("Vui lòng nhập timestamp");
+                return;
+            }
+            
+            if (isNaN(ms)) {
+                alert("Timestamp phải là số nguyên (milliseconds)");
+                return;
+            }
+            
+            try {
+                const utcDate = new Date(ms);
+                const vnDate = new Date(ms + 7 * 60 * 60 * 1000); // UTC+7
+                
+                // Kiểm tra nếu timestamp không hợp lệ
+                if (isNaN(utcDate.getTime())) {
+                    throw new Error("Timestamp không hợp lệ");
+                }
+                
+                // Định dạng ngày giờ
+                const formatDateTime = (date) => {
+                    return date.toISOString()
+                        .replace('T', ' ')
+                        .replace(/\.\d+Z/, '')
+                        .replace(/-/g, '/');
+                };
+                
+                document.getElementById("utcTime").textContent = formatDateTime(utcDate) + " (UTC)";
+                document.getElementById("vnTime").textContent = formatDateTime(vnDate) + " (UTC+7)";
+                document.getElementById("timestampResult").style.display = "block";
+            } catch (error) {
+                alert("Lỗi: " + error.message);
+            }
+        }
+
+        // Hàm copy to clipboard
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                const copyMessage = document.getElementById('copyMessage');
+                copyMessage.style.display = 'block';
+                setTimeout(() => {
+                    copyMessage.style.display = 'none';
+                }, 2000);
+            }).catch(err => {
+                console.error('Lỗi khi copy:', err);
+                // Fallback cho trình duyệt cũ
+                const textarea = document.createElement('textarea');
+                textarea.value = text;
+                document.body.appendChild(textarea);
+                textarea.select();
+                try {
+                    document.execCommand('copy');
+                    const copyMessage = document.getElementById('copyMessage');
+                    copyMessage.style.display = 'block';
+                    setTimeout(() => {
+                        copyMessage.style.display = 'none';
+                    }, 2000);
+                } catch (err) {
+                    alert('Không thể copy tự động, vui lòng copy thủ công');
+                }
+                document.body.removeChild(textarea);
+            });
+        }
+
+        // Hàm tạo code JavaScript để dò brand
+        function generateScanCode(startId, endId, delayTime) {
+            return `let stop = false;
+
+const headers = {
+  "x-platform": "ZPI",
+  "x-device-os": "IOS",
+  "x-app-version": "999",
+  "Content-Type": "application/json",
+};
+
+const fetchBrandName = async (id) => {
+  try {
+    const res = await fetch(\`https://loyalty.zalopay.vn/gateway/v1/reward/\${id}\`, {
+      method: "GET",
+      headers: headers
+    });
+    if (res.ok) {
+      const json = await res.json();
+      const brand = json?.data?.brandName;
+      if (brand) {
+        console.log(\`ID: \${id} => Brand: \${brand}\`);
+      }
+    }
+  } catch (e) {
+    // bỏ qua lỗi
+  }
+};
+
+const scan = async () => {
+  stop = false;
+  console.log(\`⏳ Bắt đầu dò brand từ ID \${${startId}} đến \${${endId}}...\`);
+  for (let id = ${startId}; id <= ${endId}; id++) {
+    if (stop) {
+      console.log("🛑 Dừng lại theo yêu cầu.");
+      break;
+    }
+    await fetchBrandName(id);
+    await new Promise((r) => setTimeout(r, ${delayTime})); // delay tránh bị chặn
+  }
+  if (!stop) {
+    console.log("✅ Dò brand hoàn tất!");
+  }
+};
+
+// Gõ dòng này để bắt đầu dò brand:
+scan();
+
+// Gõ dòng này để dừng:
+// stop = true;`;
+        }
+
+        // Hiển thị thời gian hiện tại
+        function updateCurrentTime() {
+            const now = new Date();
+            const timestamp = now.getTime();
+            const options = { 
+                weekday: 'long', 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit',
+                timeZoneName: 'short'
+            };
+            
+            const vnTimeStr = now.toLocaleString('vi-VN', { 
+                ...options, 
+                timeZone: 'Asia/Ho_Chi_Minh' 
+            });
+            
+            document.getElementById('currentTime').textContent = 
+                `Thời gian hiện tại: ${vnTimeStr} | Timestamp: ${timestamp}`;
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const generateBtn = document.getElementById('generateBtn');
+            const copyBtn = document.getElementById('copyBtn');
+            const copyLinkBtn = document.getElementById('copyLinkBtn');
+            const openLinkBtn = document.getElementById('openLinkBtn');
+            const convertTimestampBtn = document.getElementById('convertTimestampBtn');
+            
+            // Tạo code dò brand
+            generateBtn.addEventListener('click', function() {
+                const startId = parseInt(document.getElementById('startId').value);
+                const endId = parseInt(document.getElementById('endId').value);
+                const delayTime = parseInt(document.getElementById('delayTime').value);
+                
+                if (isNaN(startId)) {
+                    alert("Vui lòng nhập ID bắt đầu hợp lệ!");
+                    return;
+                }
+                
+                if (isNaN(endId)) {
+                    alert("Vui lòng nhập ID kết thúc hợp lệ!");
+                    return;
+                }
+                
+                if (startId > endId) {
+                    alert("ID bắt đầu phải nhỏ hơn ID kết thúc!");
+                    return;
+                }
+                
+                if (isNaN(delayTime) || delayTime < 0) {
+                    alert("Vui lòng nhập thời gian delay hợp lệ!");
+                    return;
+                }
+                
+                const code = generateScanCode(startId, endId, delayTime);
+                document.getElementById('generatedCode').textContent = code;
+                copyToClipboard(code);
+            });
+            
+            // Copy code
+            copyBtn.addEventListener('click', function() {
+                const code = document.getElementById('generatedCode').textContent;
+                copyToClipboard(code);
+            });
+            
+            // Copy link
+            copyLinkBtn.addEventListener('click', function() {
+                const link = document.getElementById('rewardLink').textContent;
+                copyToClipboard(link);
+            });
+            
+            // Mở link
+            openLinkBtn.addEventListener('click', function() {
+                const link = document.getElementById('rewardLink').textContent.trim();
+                if (link) {
+                    window.open(link, '_blank');
+                }
+            });
+            
+            // Chuyển đổi timestamp
+            convertTimestampBtn.addEventListener('click', convertTimestamp);
+            
+            // Cho phép nhấn Enter để chuyển đổi timestamp
+            document.getElementById('timestampInput').addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    convertTimestamp();
+                }
+            });
+
+            // Cập nhật thời gian mỗi giây
+            updateCurrentTime();
+            setInterval(updateCurrentTime, 1000);
+        });
+    </script>
+</body>
+</html>
