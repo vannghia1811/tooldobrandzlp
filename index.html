@@ -526,8 +526,10 @@ const fetchBrandName = async (id) => {
     if (res.ok) {
       const json = await res.json();
       const brand = json?.data?.brandName;
+      const title = json?.data?.displayTitle;
+      const Description = json?.data?.shortDescription;
       if (brand) {
-        console.log(\`ID: \${id} => Brand: \${brand}\`);
+        console.log(`ID: ${id} => Brand: ${brand || "?"} - ${title || "?"} - ${Description || "?"}`);
       }
     }
   } catch (e) {
